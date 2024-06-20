@@ -1,0 +1,9 @@
+QUELQUES COMMANDES PRATIQUES K8S
+*******************************
+
+---> kubectl run login-app --image=registry.gitlab.com/........./nom_image:tag --dry-run=client -o yml > nom_pod.yaml    ## cette commande cree un manifeste a partir de l'url d'une image contenu dans le registry
+---> kubectl create secret docker-registry  nom_voulu_pour_le_secret --docker-server=registry.gitlab.com --docker-username='mon_username' --docker-password='Mon_pass' --dry-run=client -o yml > secret.yaml  ### cree un secret avec les informations donnees
+---> kubectl apply -f secret.yaml  ##  on active le secret
+---> kubectl create svc nodeport nom_du_service --tcp=8080:80 --dry-run=client -o yaml > nom_du_fichier_service_voulu.yaml
+---> kubectl get pod -o wide
+---> kubectl get node -o wide

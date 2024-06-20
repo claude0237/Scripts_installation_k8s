@@ -1,0 +1,27 @@
+###apres execution du scripts###########
+#Decide which server to set as the master node. Then enter the command
+sudo hostnamectl set-hostname master-node
+#Decide which server to set as the workers node. Then enter the command
+sudo hostnamectl set-hostname w1
+
+#Initialize Kubernetes on Master Node
+sudo kubeadm init --v=5 --upload-certs --control-plane-endpoint 172.31.35.252:6443 --pod-network-cidr=10.244.0.0/16 --apiserver-advertise-address=172.31.35.252
+
+#you need to run the following as a regular user
+ mkdir -p $HOME/.kube
+ sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+ sudo chown $(id -u):$(id -g) $HOME/.kube/config
+ 
+ #Deploy Pod Network to Cluster
+#si calico
+ curl https://raw.githubusercontent.com/projectcalico/calico/v3.27.0/manifests/calico.yaml -O
+ kubectl apply -f calico.yaml
+#si flannel
+kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
+ 
+ #join the worker node to the cluster
+ kubeadm join 10.12.1.139:6443 --token 8i3167.e5fstz9y240w7gbo --discovery-token-ca-cert-hash sha256:9cacf55a3a8977f44d6ed9fa2ba172c6ff04258ae9a37291b69f931d965e30ea
+ 
+ #To enable bash completion feature on your master node
+ echo 'source <(kubectl completion bash)' >>~/.bashrc
+ source .bashrc
